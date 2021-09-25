@@ -5,6 +5,7 @@ from .playback import PlayBack
 from .playlist_library import PlaylistLibrary
 import random
 import re
+import tkinter as tk
 
 
 class VideoPlayer:
@@ -70,7 +71,7 @@ class VideoPlayer:
         for video in list_videos:
             print("  " + VideoPlayer.single_printer(video) + flag_dict[video.video_id])
 
-    def play_video(self, video_id):
+    def play_video(self, video_id, text_output):
         """Plays the respective video.
 
         Args:
@@ -84,11 +85,14 @@ class VideoPlayer:
         elif video.flagged is True:
             print(f"Cannot play video: Video is currently flagged (reason: {video.flag_reason})")
         else:
+            text_output.delete(1.0, tk.END)
             if self._playback.current_video() is not None:
-                print(f"Stopping video: {self._playback.current_video()}")
+                text_output.insert(
+                    tk.END, f"Stopping video: {self._playback.current_video()}\n")
             self._playback._video = video
             self._playback.play()
-            print(f"Playing video: {self._playback.current_video()}")
+            text_output.insert(
+                tk.END, f"Playing video: {self._playback.current_video()}\n")
 
     def stop_video(self):
         """Stops the current video."""
@@ -99,7 +103,7 @@ class VideoPlayer:
             print(f"Stopping video: {self._playback.current_video()}")
             self._playback.stop()
 
-    def play_random_video(self):
+    def play_random_video(self, text_output):
         """Plays a random video from the video library."""
 
         def not_flagged(video):
@@ -112,7 +116,7 @@ class VideoPlayer:
             print("No videos available")
         else:
             random_video = random.choice(available_videos)
-            self.play_video(random_video.video_id)
+            self.play_video(random_video.video_id, text_output)
 
     def pause_video(self):
         """Pauses the current video."""
