@@ -71,19 +71,31 @@ class VideoPlayer:
         for video in list_videos:
             print("  " + VideoPlayer.single_printer(video) + flag_dict[video.video_id])
 
+    def play_button(self, text_output):
+        """Play button has different functionalities so this function is necessary, unlike pause button"""
+
+        if self._playback._playback_state == "Playing":
+            text_output.insert(tk.END, "Video is already playing\n")
+        elif self._playback.current_video() is None:
+            text_output.delete(1.0, tk.END)
+            self.play_random_video(text_output)
+        elif self._playback._playback_state == "Paused":
+            self.continue_video(text_output)
+
     def play_video(self, video_id, text_output):
         """Plays the respective video.
 
         Args:
             video_id: The video_id to be played.
+            text_output: The text widget to print to
         """
 
         video = self._video_library.get_video(video_id)
 
-        if video is None:
-            print("Cannot play video: Video does not exist")
-        elif video.flagged is True:
-            print(f"Cannot play video: Video is currently flagged (reason: {video.flag_reason})")
+        if video.flagged is True:
+            text_output.delete(1.0, tk.END)
+            text_output.insert(
+                tk.END, f"Cannot play video: Video is currently flagged (reason: {video.flag_reason})\n")
         else:
             text_output.delete(1.0, tk.END)
             if self._playback.current_video() is not None:
@@ -94,13 +106,13 @@ class VideoPlayer:
             text_output.insert(
                 tk.END, f"Playing video: {self._playback.current_video()}\n")
 
-    def stop_video(self):
+    def stop_video(self, text_output):
         """Stops the current video."""
 
         if self._playback.current_video() is None:
-            print("Cannot stop video: No video is currently playing")
+            text_output.insert(tk.END, "Cannot stop video: No video is currently playing\n")
         else:
-            print(f"Stopping video: {self._playback.current_video()}")
+            text_output.insert(tk.END, f"Stopping video: {self._playback.current_video()}\n")
             self._playback.stop()
 
     def play_random_video(self, text_output):
@@ -113,31 +125,31 @@ class VideoPlayer:
         available_videos = list(filter(not_flagged, list_videos))
 
         if available_videos == []:
-            print("No videos available")
+            text_output.insert(tk.END, "No videos available\n")
         else:
             random_video = random.choice(available_videos)
             self.play_video(random_video.video_id, text_output)
 
-    def pause_video(self):
+    def pause_video(self, text_output):
         """Pauses the current video."""
 
         if self._playback.current_video() is None:
-            print("Cannot pause video: No video is currently playing")
+            text_output.insert(tk.END, "Cannot pause video: No video is currently playing\n")
         elif self._playback._playback_state == "Paused":
-            print(f"Video already paused: {self._playback.current_video()}")
+            text_output.insert(tk.END, f"Video already paused: {self._playback.current_video()}\n")
         else:
-            print(f"Pausing video: {self._playback.current_video()}")
+            text_output.insert(tk.END, f"Pausing video: {self._playback.current_video()}\n")
             self._playback.pause()
 
-    def continue_video(self):
+    def continue_video(self, text_output):
         """Resumes playing the current video."""
 
         if self._playback.current_video() is None:
-            print("Cannot continue video: No video is currently playing")
+            text_output.insert(tk.END, "Cannot continue video: No video is currently playing\n")
         elif self._playback._playback_state == "Playing":
-            print("Cannot continue video: Video is not paused")
+            text_output.insert(tk.END, "Cannot continue video: Video is not paused\n")
         else:
-            print(f"Continuing video: {self._playback.current_video()}")
+            text_output.insert(tk.END, f"Continuing video: {self._playback.current_video()}\n")
             self._playback.play()
 
     def show_playing(self):

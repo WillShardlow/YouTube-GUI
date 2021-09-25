@@ -40,9 +40,9 @@ class GUI:
         play_button = tk.Button(buttons_frame, text="\U000025B6", fg="black",
                                 width=5, height=3, bd=0, bg="#fff", command=self._play_button_command)
         pause_button = tk.Button(buttons_frame, text="\U000023F8", fg="black",
-                                 width=5, height=3, bd=0, bg="#fff")
+                                 width=5, height=3, bd=0, bg="#fff", command=self._pause_button_command)
         stop_button = tk.Button(buttons_frame, text="\U000023F9", fg="black",
-                                width=5, height=3, bd=0, bg="#fff")
+                                width=5, height=3, bd=0, bg="#fff", command=self._stop_button_command)
         show_videos_button = tk.Button(buttons_frame, text="Show Videos",
                                        fg="black", width=8, height=3, bd=0, bg="#fff")
         search_button = tk.Button(buttons_frame, text="Search", fg="black",
@@ -54,4 +54,10 @@ class GUI:
         search_button.pack(side="left")
 
     def _play_button_command(self):
-        self._player.play_random_video(self._text_output)
+        self._player.play_button(self._text_output)
+
+    def _pause_button_command(self):
+        self._player.pause_video(self._text_output)
+
+    def _stop_button_command(self):
+        self._player.stop_video(self._text_output)
