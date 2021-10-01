@@ -54,7 +54,7 @@ class VideoPlayer:
 
         print(f"{self._num_videos} videos in the library")
 
-    def show_all_videos(self):
+    def show_all_videos(self, text_output):
         """Returns all videos."""
 
         list_videos = self._video_library.get_all_videos()
@@ -67,9 +67,14 @@ class VideoPlayer:
             else:
                 flag_dict[video.video_id] = ""
 
-        print("Here\'s a list of all available videos:")
+        text_output.delete(1.0, tk.END)
+        if self._playback.current_video() is not None:
+            self.stop_video(text_output)
+
+        text_output.insert(tk.END, "Here\'s a list of all available videos:\n")
         for video in list_videos:
-            print("  " + VideoPlayer.single_printer(video) + flag_dict[video.video_id])
+            text_output.insert(tk.END, "  " + VideoPlayer.single_printer(video) +
+                               flag_dict[video.video_id] + "\n")
 
     def play_button(self, text_output):
         """Play button has different functionalities so this function is necessary, unlike pause button"""

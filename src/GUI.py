@@ -27,7 +27,7 @@ class GUI:
                                      highlightcolor="black", highlightthickness=1)
         main_screen_frame.pack(padx=15, pady=15)
         main_screen_frame.pack_propagate(False)
-        self._text_output = tk.Text(main_screen_frame, bd=0, bg="#0D1A47", fg='white')
+        self._text_output = tk.Text(main_screen_frame, bd=0, bg="#0D1A47", fg='white', wrap="none")
         self._text_output.pack(fill="both", expand=True)
         self._text_output.insert(
             tk.END, "Hello and welcome to YouTube!\nPress play to play a random video!\n")
@@ -44,7 +44,7 @@ class GUI:
         stop_button = tk.Button(buttons_frame, text="\U000023F9", fg="black",
                                 width=5, height=3, bd=0, bg="#fff", command=self._stop_button_command)
         show_videos_button = tk.Button(buttons_frame, text="Show Videos",
-                                       fg="black", width=8, height=3, bd=0, bg="#fff")
+                                       fg="black", width=8, height=3, bd=0, bg="#fff", command=self._show_videos_command)
         search_button = tk.Button(buttons_frame, text="Search", fg="black",
                                   width=8, height=3, bd=0, bg="#fff")
         show_videos_button.pack(side="left")
@@ -61,3 +61,6 @@ class GUI:
 
     def _stop_button_command(self):
         self._player.stop_video(self._text_output)
+
+    def _show_videos_command(self):
+        self._player.show_all_videos(self._text_output)
