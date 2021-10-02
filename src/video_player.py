@@ -17,13 +17,14 @@ class VideoPlayer:
         self._playlist_library = PlaylistLibrary()
         self._num_videos = len(self._video_library.get_all_videos())
 
-    def test(self):
+    def test(self, event, tag, video_id, text_output):
         '''This is a function that I can edit to test different things
         but having all the various classes and methods etc. defined.'''
 
-        print("Enter a number and I will double it")
-        num = int(input())
-        print(num*2)
+        self.play_video(video_id, text_output)
+
+    def play_on_click(self, event, tag, video_id, text_output):
+        self.play_video(video_id, text_output)
 
     @staticmethod
     def tag_printer(tags):
@@ -72,9 +73,19 @@ class VideoPlayer:
             self.stop_video(text_output)
 
         text_output.insert(tk.END, "Here\'s a list of all available videos:\n")
+        # for count, video in enumerate(list_videos):
+        #     text_output.tag_config("tag" + str(count))
+        #     text_output.tag_bind("tag" + str(count), "<Button-1>", lambda e: self.test(e,
+        #                                                                                "tag" + str(count), video.video_id, text_output))
+        #     text_output.insert(tk.END, "  " + VideoPlayer.single_printer(video) +
+        #                        flag_dict[video.video_id] + "\n", "tag" + str(count))
+
         for video in list_videos:
+            text_output.tag_config(video.video_id)
+            text_output.tag_bind(video.video_id, "<Button-1>", lambda e, video_id=video.video_id: self.play_on_click(e,
+                                                                                                                     video_id, video_id, text_output))
             text_output.insert(tk.END, "  " + VideoPlayer.single_printer(video) +
-                               flag_dict[video.video_id] + "\n")
+                               flag_dict[video.video_id] + "\n", video.video_id)
 
     def play_button(self, text_output):
         """Play button has different functionalities so this function is necessary, unlike pause button"""
