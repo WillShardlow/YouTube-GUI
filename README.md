@@ -6,7 +6,7 @@ An extension of 'YouTube-Challenge'. A graphical user interface to interact with
 
 Only some of the features from that simulation have been implemented.
 
-## Running application
+## Running the application
 
 To run the application:
 
