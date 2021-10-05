@@ -1,4 +1,4 @@
-<img align="left" width="166" height="94" src="youtube-logo.gif" alt="YouTube logo">
+<img align="left" width="257" height="80" src="youtube-logo.gif" alt="YouTube logo">
 
 # YouTube-GUI
 
