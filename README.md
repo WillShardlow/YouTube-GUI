@@ -1,6 +1,6 @@
 <img align="left" width="257" height="80" src="youtube-logo.gif" alt="YouTube logo">
 
-# YouTube-GUI
+# GUI
 
 An extension of 'YouTube-Challenge'. A graphical user interface to interact with the YouTube simulation from 'YouTube-Challenge'.
 
