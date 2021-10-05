@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <img align="left" width="257" height="80" src="youtube-logo.gif" alt="YouTube logo">
-=======
-<img align="left" width="142" height="80" src="youtube-logo.gif" alt="YouTube logo">
->>>>>>> b1bb0fe0abf3b914d41994430fddbba25c4bc394
 
 # YouTube-GUI
 
