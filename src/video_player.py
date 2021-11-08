@@ -26,6 +26,12 @@ class VideoPlayer:
     def play_on_click(self, event, tag, video_id, text_output):
         self.play_video(video_id, text_output)
 
+    def add_highlighter(self, event, tag, text_output):
+        text_output.tag_config(tag, background="white", foreground="#0D1A47")
+
+    def remove_highlighter(self, event, tag, text_output):
+        text_output.tag_config(tag, background="#0D1A47", foreground="white")
+
     @staticmethod
     def tag_printer(tags):
         """Prints the tags associated with a video in square brackets, separated by a space"""
@@ -49,8 +55,8 @@ class VideoPlayer:
 
     def number_of_videos(self):
         """Returns number of videos"""
-        #num_videos = len(self._video_library.get_all_videos())
-        #print(f"{num_videos} videos in the library")
+        # num_videos = len(self._video_library.get_all_videos())
+        # print(f"{num_videos} videos in the library")
         # above^^ is what was already given but I've changed it
 
         print(f"{self._num_videos} videos in the library")
@@ -73,17 +79,15 @@ class VideoPlayer:
             self.stop_video(text_output)
 
         text_output.insert(tk.END, "Here\'s a list of all available videos:\n")
-        # for count, video in enumerate(list_videos):
-        #     text_output.tag_config("tag" + str(count))
-        #     text_output.tag_bind("tag" + str(count), "<Button-1>", lambda e: self.test(e,
-        #                                                                                "tag" + str(count), video.video_id, text_output))
-        #     text_output.insert(tk.END, "  " + VideoPlayer.single_printer(video) +
-        #                        flag_dict[video.video_id] + "\n", "tag" + str(count))
 
         for video in list_videos:
             text_output.tag_config(video.video_id)
             text_output.tag_bind(video.video_id, "<Button-1>", lambda e, video_id=video.video_id: self.play_on_click(e,
                                                                                                                      video_id, video_id, text_output))
+            text_output.tag_bind(video.video_id, "<Enter>", lambda e, video_id=video.video_id: self.add_highlighter(e,
+                                                                                                                    video_id, text_output))
+            text_output.tag_bind(video.video_id, "<Leave>", lambda e, video_id=video.video_id: self.remove_highlighter(e,
+                                                                                                                       video_id, text_output))
             text_output.insert(tk.END, "  " + VideoPlayer.single_printer(video) +
                                flag_dict[video.video_id] + "\n", video.video_id)
 
@@ -308,6 +312,9 @@ class VideoPlayer:
         else:
             self._playlist_library.delete_playlist(playlist_name)
             print(f"Deleted playlist: {playlist_name}")
+
+    # def search_button(self):
+        # search_term = input("What would you like to search for?")
 
     def search_videos(self, search_term):
         """Display all the videos whose titles contain the search_term.
