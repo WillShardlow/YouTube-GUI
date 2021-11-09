@@ -1,7 +1,5 @@
 """A youtube terminal simulator."""
 from .video_player import VideoPlayer
-from .command_parser import CommandException
-from .command_parser import CommandParser
 from .GUI import GUI
 import tkinter as tk
 

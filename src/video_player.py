@@ -2,7 +2,6 @@
 
 from .video_library import VideoLibrary
 from .playback import PlayBack
-from .playlist_library import PlaylistLibrary
 import random
 import re
 import tkinter as tk
@@ -14,7 +13,6 @@ class VideoPlayer:
     def __init__(self):
         self._video_library = VideoLibrary()
         self._playback = PlayBack()
-        self._playlist_library = PlaylistLibrary()
         self._num_videos = len(self._video_library.get_all_videos())
 
     def test(self, event, tag, video_id, text_output):
@@ -52,14 +50,6 @@ class VideoPlayer:
     def single_printer(video):
         """Prints all video information in a nice format"""
         return(f"{video.title} ({video.video_id}) {VideoPlayer.tag_printer(video.tags)}")
-
-    def number_of_videos(self):
-        """Returns number of videos"""
-        # num_videos = len(self._video_library.get_all_videos())
-        # print(f"{num_videos} videos in the library")
-        # above^^ is what was already given but I've changed it
-
-        print(f"{self._num_videos} videos in the library")
 
     def show_all_videos(self, text_output):
         """Returns all videos."""
@@ -172,156 +162,22 @@ class VideoPlayer:
             text_output.insert(tk.END, f"Continuing video: {self._playback.current_video()}\n")
             self._playback.play()
 
-    def show_playing(self):
-        """Displays video currently playing."""
+    def search_button(self, text_output):
 
-        current_video = self._playback._video
+        pop_up = tk.Toplevel()
+        pop_up.title("Search")
+        pop_up.geometry("300x100")
 
-        if current_video is None:
-            print("No video is currently playing")
-        elif self._playback._playback_state == "Paused":
-            print(f"Currently playing: {VideoPlayer.single_printer(current_video)} - PAUSED")
-        else:
-            print(f"Currently playing: {VideoPlayer.single_printer(current_video)}")
+        label = tk.Label(pop_up, text="What would you like to search for?")
+        entry = tk.Entry(pop_up, width=25)
+        label.pack(expand=True)
+        entry.pack(expand=True)
+        entry.focus()
 
-    def create_playlist(self, playlist_name):
-        """Creates a playlist with a given name.
+        pop_up.bind('<Return>', lambda e: self.search_videos(e, pop_up, text_output, entry.get()))
 
-        Args:
-            playlist_name: The playlist name.
-        """
-
-        if playlist_name.upper() in self._playlist_library._playlists:
-            print("Cannot create playlist: A playlist with the same name already exists")
-        else:
-            self._playlist_library.new_playlist(playlist_name)
-            print(f"Successfully created new playlist: {playlist_name}")
-
-    def add_to_playlist(self, playlist_name, video_id):
-        """Adds a video to a playlist with a given name.
-
-        Args:
-            playlist_name: The playlist name.
-            video_id: The video_id to be added.
-        """
-
-        playlist = self._playlist_library.get_playlist(playlist_name)
-        video = self._video_library.get_video(video_id)
-
-        if playlist is None:
-            print(f"Cannot add video to {playlist_name}: Playlist does not exist")
-        elif video is None:
-            print(f"Cannot add video to {playlist_name}: Video does not exist")
-        elif video.flagged is True:
-            print(
-                f"Cannot add video to {playlist_name}: Video is currently flagged (reason: {video.flag_reason})")
-        else:
-            if video in playlist._videos:
-                print(f"Cannot add video to {playlist_name}: Video already added")
-            else:
-                playlist.add_video(video)
-                print(f"Added video to {playlist_name}: {video.title}")
-
-    def show_all_playlists(self):
-        """Display all playlists."""
-
-        playlists = self._playlist_library.get_all_playlists()
-
-        if playlists == []:
-            print("No playlists exist yet")
-        else:
-            playlist_names = sorted([playlist.name for playlist in playlists])
-            print("Showing all playlists:")
-            for name in playlist_names:
-                print("  " + name)
-
-    def show_playlist(self, playlist_name):
-        """Display all videos in a playlist with a given name.
-
-        Args:
-            playlist_name: The playlist name.
-        """
-
-        playlist = self._playlist_library.get_playlist(playlist_name)
-
-        if playlist is None:
-            print(f"Cannot show playlist {playlist_name}: Playlist does not exist")
-        else:
-
-            playlist_videos = playlist.get_all_videos()
-
-            flag_dict = {}
-            for video in playlist_videos:
-                if video.flagged is True:
-                    flag_dict[video.video_id] = f" - FLAGGED (reason: {video.flag_reason})"
-                else:
-                    flag_dict[video.video_id] = ""
-
-            print(f"Showing playlist: {playlist_name}")
-            if playlist_videos == []:
-                print("  No videos here yet")
-            else:
-                for video in playlist_videos:
-                    print("  " + VideoPlayer.single_printer(video) + flag_dict[video.video_id])
-
-    def remove_from_playlist(self, playlist_name, video_id):
-        """Removes a video to a playlist with a given name.
-
-        Args:
-            playlist_name: The playlist name.
-            video_id: The video_id to be removed.
-        """
-
-        playlist = self._playlist_library.get_playlist(playlist_name)
-        video = self._video_library.get_video(video_id)
-
-        if playlist is None:
-            print(f"Cannot remove video from {playlist_name}: Playlist does not exist")
-        elif video is None:
-            print(f"Cannot remove video from {playlist_name}: Video does not exist")
-        elif video not in playlist.get_all_videos():
-            print(f"Cannot remove video from {playlist_name}: Video is not in playlist")
-        else:
-            playlist.remove_video(video)
-            print(f"Removed video from {playlist_name}: {video.title}")
-
-    def clear_playlist(self, playlist_name):
-        """Removes all videos from a playlist with a given name.
-
-        Args:
-            playlist_name: The playlist name.
-        """
-
-        playlist = self._playlist_library.get_playlist(playlist_name)
-
-        if playlist is None:
-            print(f"Cannot clear playlist {playlist_name}: Playlist does not exist")
-        else:
-            playlist.clear()
-            print(f"Successfully removed all videos from {playlist_name}")
-
-    def delete_playlist(self, playlist_name):
-        """Deletes a playlist with a given name.
-
-        Args:
-            playlist_name: The playlist name.
-        """
-
-        if self._playlist_library.get_playlist(playlist_name) is None:
-            print(f"Cannot delete playlist {playlist_name}: Playlist does not exist")
-        else:
-            self._playlist_library.delete_playlist(playlist_name)
-            print(f"Deleted playlist: {playlist_name}")
-
-    # def search_button(self):
-        # search_term = input("What would you like to search for?")
-
-    def search_videos(self, search_term):
-        """Display all the videos whose titles contain the search_term.
-
-        Args:
-            search_term: The query to be used in search.
-        """
+    def search_videos(self, event, pop_up_window, text_output, search_term):
+        """Display all the videos whose titles contain the search_term."""
 
         def not_flagged(video):
             return not video.flagged
@@ -338,23 +194,27 @@ class VideoPlayer:
         #     if video.title.lower().find(search_term.lower()) != -1:
         #         list_of_matched_videos.append(video)
 
+        text_output.delete(1.0, tk.END)
+
         if list_of_matched_videos == []:
-            print(f"No search results for {search_term}")
+            text_output.insert(
+                tk.END, f"No search results for {search_term}\n")
         else:
             list_of_matched_videos.sort(key=lambda x: x.title)
-            print(f"Here are the results for {search_term}:")
-            for i in range(len(list_of_matched_videos)):
-                print(f"  {i+1}) {VideoPlayer.single_printer(list_of_matched_videos[i])}")
-            print("Would you like to play any of the above? If yes, specify the number of the video.")
-            print("If your answer is not a valid number, we will assume it's a no.")
+            text_output.insert(
+                tk.END, f"Here are the results for {search_term}:\n")
+            for video in list_of_matched_videos:
+                text_output.tag_config(video.video_id)
+                text_output.tag_bind(video.video_id, "<Button-1>", lambda e, video_id=video.video_id: self.play_on_click(e,
+                                                                                                                         video_id, video_id, text_output))
+                text_output.tag_bind(video.video_id, "<Enter>", lambda e, video_id=video.video_id: self.add_highlighter(e,
+                                                                                                                        video_id, text_output))
+                text_output.tag_bind(video.video_id, "<Leave>", lambda e, video_id=video.video_id: self.remove_highlighter(e,
+                                                                                                                           video_id, text_output))
+                text_output.insert(
+                    tk.END, f"  {VideoPlayer.single_printer(video)}\n", video.video_id)
 
-            valid_answers = [str(i+1) for i in range(len(list_of_matched_videos))]
-
-            ans = input()
-
-            if ans in valid_answers:
-                video_to_play = list_of_matched_videos[int(ans)-1]
-                self.play_video(video_to_play.video_id)
+        pop_up_window.destroy()
 
     def search_videos_tag(self, video_tag):
         """Display all videos whose tags contains the provided tag.

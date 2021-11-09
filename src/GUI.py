@@ -68,3 +68,7 @@ class GUI:
 
     def _search_command(self):
         self._player.search_button(self._text_output)
+
+    # # Define a function to close the popup window
+    # def close_win(self, pop_up):
+    #     pop_up.destroy()
