@@ -18,4 +18,4 @@ Start by pressing :arrow_forward: to play a random video. Or press 'Show Videos'
 
 ## Demo
 
-To do...
+![](Demo.gif)
